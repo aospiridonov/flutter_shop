@@ -29,6 +29,13 @@ class Cart with ChangeNotifier {
     return _items.length;
   }
 
+  double get totalAmount {
+    return _items.entries.fold(
+        0.0,
+        (previousValue, element) =>
+            previousValue + element.value.quantity * element.value.price);
+  }
+
   void addItem(
     String id,
     double price,
