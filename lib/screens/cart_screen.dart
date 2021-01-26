@@ -33,7 +33,7 @@ class CartScreen extends StatelessWidget {
                     Spacer(),
                     Chip(
                       label: Text(
-                        '\$${cart.totalAmount.toStringAsFixed(2)}',
+                        '\$${cart.totalAmount}',
                         style: TextStyle(
                             color: Theme.of(context)
                                 .primaryTextTheme
@@ -55,6 +55,7 @@ class CartScreen extends StatelessWidget {
                 child: ListView.builder(
               itemBuilder: (context, index) => CartItem(
                 cart.items.values.toList()[index].id,
+                cart.items.keys.toList()[index],
                 cart.items.values.toList()[index].price,
                 cart.items.values.toList()[index].quantity,
                 cart.items.values.toList()[index].title,
