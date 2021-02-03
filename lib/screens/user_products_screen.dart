@@ -9,7 +9,11 @@ import '../widgets/user_product_item.dart';
 import './edit_product_screen.dart';
 
 class UserProductsScreen extends StatelessWidget {
-  static const routeName = '/user';
+  static const routeName = '/user-products';
+
+  Future<void> _refereshProducts(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  }
 
   const UserProductsScreen({Key key}) : super(key: key);
 
@@ -19,7 +23,7 @@ class UserProductsScreen extends StatelessWidget {
     //print(productsData.items);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your products'),
+        title: const Text('Your Products'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -30,20 +34,23 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemBuilder: (context, index) => Column(
-            children: [
-              UserProductItem(
-                productsData.items[index].id,
-                productsData.items[index].title,
-                productsData.items[index].imageUrl,
-              ),
-              Divider()
-            ],
+      body: RefreshIndicator(
+        onRefresh: () => _refereshProducts(context),
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: ListView.builder(
+            itemBuilder: (context, index) => Column(
+              children: [
+                UserProductItem(
+                  productsData.items[index].id,
+                  productsData.items[index].title,
+                  productsData.items[index].imageUrl,
+                ),
+                Divider()
+              ],
+            ),
+            itemCount: productsData.items.length,
           ),
-          itemCount: productsData.items.length,
         ),
       ),
     );
