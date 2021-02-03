@@ -122,7 +122,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      // } finally {
+      }
+      // finally {
       //   setState(() {
       //     _isLoading = false;
       //   });
