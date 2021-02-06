@@ -75,6 +75,7 @@ class Products with ChangeNotifier {
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      print(extractedData);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -125,7 +126,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((item) => item.id == id);
     if (prodIndex >= 0) {
       final url =
-          'https://flutter-update-73816-default-rtdb.firebaseio.com/products/${id}.json';
+          'https://flutter-update-73816-default-rtdb.firebaseio.com/products/$id.json';
 
       await http.patch(url,
           body: json.encode({
@@ -144,7 +145,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url =
-        'https://flutter-update-73816-default-rtdb.firebaseio.com/products/${id}.json';
+        'https://flutter-update-73816-default-rtdb.firebaseio.com/products/$id.json';
     final existingProductIndex = _items.indexWhere((item) => item.id == id);
     var existingProduct = _items[existingProductIndex];
 
