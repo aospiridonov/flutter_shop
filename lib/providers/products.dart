@@ -98,7 +98,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url =
+    var url =
         'https://flutter-update-73816-default-rtdb.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(
