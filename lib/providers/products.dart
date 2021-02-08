@@ -44,8 +44,8 @@ class Products with ChangeNotifier {
 
   // var _showFavoritesOnly = false;
 
-  String authToken;
-  String userId;
+  final String authToken;
+  final String userId;
 
   Products(this.authToken, this.userId, this._items);
 
