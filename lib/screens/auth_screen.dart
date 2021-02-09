@@ -94,7 +94,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   Map<String, String> _authData = {
@@ -103,6 +104,34 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  AnimationController _controller;
+  Animation<Size> _heightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _heightAnimation = Tween<Size>(
+      begin: Size(double.infinity, 260),
+      end: Size(double.infinity, 320),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+    _heightAnimation.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -111,7 +140,7 @@ class _AuthCardState extends State<AuthCard> {
         title: Text('An Error Occurred!'),
         content: Text(message),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text('Okey'),
             onPressed: () {
               Navigator.of(ctx).pop();
@@ -175,10 +204,12 @@ class _AuthCardState extends State<AuthCard> {
       setState(() {
         _authMode = AuthMode.Signup;
       });
+      _controller.forward();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
+      _controller.reverse();
     }
   }
 
@@ -191,9 +222,13 @@ class _AuthCardState extends State<AuthCard> {
       ),
       elevation: 8.0,
       child: Container(
-        height: _authMode == AuthMode.Signup ? 320 : 260,
+        //height: _authMode == AuthMode.Signup ? 320 : 260,
+        height: _heightAnimation.value.height,
         constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+            //BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+            BoxConstraints(
+          minHeight: _heightAnimation.value.height,
+        ),
         width: deviceSize.width * 0.75,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -248,25 +283,31 @@ class _AuthCardState extends State<AuthCard> {
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  RaisedButton(
+                  ElevatedButton(
                     child:
                         Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      primary: Theme.of(context).primaryColor,
+                      onPrimary:
+                          Theme.of(context).primaryTextTheme.button.color,
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
-                FlatButton(
+                TextButton(
                   child: Text(
                       '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
+                  style: TextButton.styleFrom(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    primary: Theme.of(context).primaryColor,
+                  ),
                 ),
               ],
             ),
